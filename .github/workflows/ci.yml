@@ -1,4 +1,4 @@
-name: CI
+name: Push Artifact to AWS CodeArtifact
 
 on:
   push:
@@ -25,5 +25,5 @@ jobs:
         run: |
           aws codeartifact login --tool npm --repository rust-repo --domain rust-domain
 
-      - name: Publish to CodeArtifact
-        run: npm publish
+#     - name: Publish to CodeArtifact
+#        run: 
