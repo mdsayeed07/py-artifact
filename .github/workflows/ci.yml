@@ -41,7 +41,7 @@ jobs:
         run: |
           aws codeartifact get-authorization-token --domain ${{env.DOMAIN}} --query authorizationToken --output text
       
-      ## add condition
+      ## add condition##
       - name: Check existing package versions
         id: check_versions
         run: |
