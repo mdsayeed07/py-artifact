@@ -15,25 +15,24 @@ jobs:
       REPOSITORY: py-repo
       REGION: us-east-1
       PACKAGE_VERSION: 1.0.0
-      PACKAGE_NAME: main.zip
+      PACKAGE_NAME: main.tar
       NAMESPACE: py_generic_artifacts
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: check python version
-        run: |
-          python --version
-          pip --version
+      # - name: check python version
+      #   run: |
+      #     python --version
+      #     pip --version
 
-      - name: run python source-code
-        run: python main.py
+      # - name: run python source-code
+      #   run: python main.py
 
-      - name: zipping python source-code
+      - name: zipping python source-code with tar
         run: |
-          sudo apt install -y zip unzip
-          zip -r main.zip .
+          tar -cvf main.tar main.py
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
