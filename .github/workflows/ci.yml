@@ -21,9 +21,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 
 
-      - name: Configure npm for CodeArtifact
+      - name: Configure pip for CodeArtifact
         run: |
-          aws codeartifact login --tool npm --repository rust-repo --domain rust-domain
+          aws codeartifact login --tool pip --repository rust-repo --domain rust-domain
 
-#     - name: Publish to CodeArtifact
-#        run: 
+      - name: Generate CodeArtifact Authorization Token
+        run: |
+          aws codeartifact get-authorization-token --domain rust-domain --query authorizationToken --output text
+      
+      - name: Calculate SHA256 hash
+        id: sha256
+        run: |
+          sha256sum hello-world > hello-world.sha256
+          cat hello-world.sha256
+          echo "::set-output name=sha256::$(awk {print $1} hello-world.sha256)"
+
+      - name: Publish to CodeArtifact
+        run: | 
+          aws codeartifact publish-package-version \
+          --domain rust \
+          --repository poc_001_artifact \
+          --format pip \ 
+          --package hello-world \ 
+          --package-version 1.0.0 \
+          --asset-name hello-world \
+          --asset-content ./hello-world \
+          --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
+          --namespace generic_artifacts \
+          --region us-east-1
