@@ -52,8 +52,8 @@ jobs:
           aws codeartifact publish-package-version \
           --domain rust \
           --repository rust-repo \
-          --format pip \ 
-          --package main.py \ 
+          --format pip \
+          --package main.py \
           --package-version 1.0.0 \
           --asset-name main.py \
           --asset-content ./main.py \
