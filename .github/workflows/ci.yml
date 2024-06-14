@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env: 
+      DOMAIN: py-domain
+      REPOSITORY: py-repo
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,9 +24,7 @@ jobs:
           pip --version
 
       - name: run python source-code
-        run: |
-          python main.py
-          ls -la
+        run: python main.py
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -33,11 +35,11 @@ jobs:
 
       - name: Configure pip for CodeArtifact
         run: |
-          aws codeartifact login --tool pip --repository rust-repo --domain rust-domain
+          aws codeartifact login --tool pip --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
 
       - name: Generate CodeArtifact Authorization Token
         run: |
-          aws codeartifact get-authorization-token --domain rust-domain --query authorizationToken --output text
+          aws codeartifact get-authorization-token --domain ${{env.DOMAIN}} --query authorizationToken --output text
       
       - name: Calculate SHA256 hash
         id: sha256
@@ -50,8 +52,8 @@ jobs:
       - name: Publish to CodeArtifact
         run: | 
           aws codeartifact publish-package-version \
-          --domain rust \
-          --repository rust-repo \
+          --domain ${{env.DOMAIN}} \
+          --repository ${{env.REPOSITORY}} \
           --format pypi \
           --package main.py \
           --package-version 1.0.0 \
