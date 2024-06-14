@@ -22,14 +22,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: check python version
-      #   run: |
-      #     python --version
-      #     pip --version
-
-      # - name: run python source-code
-      #   run: python main.py
-
       - name: zipping python source-code with tar
         run: |
           ls -la
