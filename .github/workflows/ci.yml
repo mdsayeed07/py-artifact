@@ -22,13 +22,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: check python version
-      #   run: |
-      #     python --version
-      #     pip --version
+      - name: check python version
+        run: |
+          python --version
+          pip --version
 
-      # - name: run python source-code
-      #   run: python main.py
+      - name: run python source-code
+        run: python main.py
 
       - name: zipping python source-code with tar
         run: |
@@ -53,7 +53,7 @@ jobs:
         id: sha256
         run: |
           ls -la
-          sha256sum main.zip > main.sha256
+          sha256sum ${{env.PACKAGE_NAME}} > main.sha256
           cat main.sha256
           echo "::set-output name=sha256::$(awk '{print $1}' main.sha256)"
 
