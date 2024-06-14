@@ -100,7 +100,7 @@ jobs:
       - name: Check if version exists
         id: version_check
         run: |
-          if echo "${{ steps.parse_versions.outputs.versions_list }}" | grep -q "${{ env.PACKAGE_VERSION }}"; then
+          if ! echo "${{ steps.parse_versions.outputs.versions_list }}" | grep -q "${{ env.PACKAGE_VERSION }}"; then
             echo "Version ${PACKAGE_VERSION} already exists. Skipping publish."
             echo "::set-output name=version_exists::true"
             exit 1
