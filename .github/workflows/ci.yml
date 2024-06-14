@@ -43,7 +43,7 @@ jobs:
         id: sha256
         run: |
           ls -la
-          sha256sum main > main.sha256
+          sha256sum main.py > main.sha256
           cat main.sha256
           echo "::set-output name=sha256::$(awk '{print $1}' main.sha256)"
 
@@ -53,10 +53,10 @@ jobs:
           --domain rust \
           --repository rust-repo \
           --format pip \ 
-          --package main \ 
+          --package main.py \ 
           --package-version 1.0.0 \
-          --asset-name main \
-          --asset-content ./main \
+          --asset-name main.py \
+          --asset-content ./main.py \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
           --namespace generic_artifacts \
           --region us-east-1
