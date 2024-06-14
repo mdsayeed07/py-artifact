@@ -32,7 +32,7 @@ jobs:
 
       - name: zipping python source-code
         run: |
-          apt install -y zip unzip
+          sudo apt install -y zip unzip
           zip -r main.py .
           ls -la
 
