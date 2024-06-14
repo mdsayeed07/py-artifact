@@ -32,20 +32,21 @@ jobs:
       - name: Calculate SHA256 hash
         id: sha256
         run: |
-          sha256sum hello-world > hello-world.sha256
-          cat hello-world.sha256
-          echo "::set-output name=sha256::$(awk {print $1} hello-world.sha256)"
+          ls -la
+          sha256sum main > main.sha256
+          cat main.sha256
+          echo "::set-output name=sha256::$(awk {print $1} main.sha256)"
 
       - name: Publish to CodeArtifact
         run: | 
           aws codeartifact publish-package-version \
           --domain rust \
-          --repository poc_001_artifact \
+          --repository rust-repo \
           --format pip \ 
-          --package hello-world \ 
+          --package main \ 
           --package-version 1.0.0 \
-          --asset-name hello-world \
-          --asset-content ./hello-world \
+          --asset-name main \
+          --asset-content ./main \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
           --namespace generic_artifacts \
           --region us-east-1
