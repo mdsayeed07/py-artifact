@@ -24,7 +24,6 @@ jobs:
 
       - name: zipping python source-code with tar
         run: |
-          ls -la
           tar -cvf main.tar main.py
 
       - name: Configure AWS credentials
@@ -42,10 +41,35 @@ jobs:
         run: |
           aws codeartifact get-authorization-token --domain ${{env.DOMAIN}} --query authorizationToken --output text
       
+      ## add condition
+      - name: Check existing package versions
+        id: check_versions
+        run: |
+          existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format json)
+          echo "$existing_versions"
+          echo "::set-output name=existing_versions::$existing_versions"
+  
+      - name: Parse existing versions
+        id: parse_versions
+        run: |
+          echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
+          jq -r '.versions[]' existing_versions.json > versions_list.txt
+          echo "::set-output name=versions_list::$(cat versions_list.txt)"
+  
+      - name: Check if version exists
+        id: version_check
+        run: |
+          if grep -q "${{ env.PACKAGE_VERSION }}" versions_list.txt; then
+            echo "Version ${PACKAGE_VERSION} already exists. Skipping publish."
+            echo "::set-output name=version_exists::true"
+          else
+            echo "Version ${PACKAGE_VERSION} does not exist. Proceeding with publish."
+            echo "::set-output name=version_exists::false"
+          fi
+
       - name: Calculate SHA256 hash
         id: sha256
         run: |
-          ls -la
           sha256sum ${{env.PACKAGE_NAME}} > main.sha256
           cat main.sha256
           echo "::set-output name=sha256::$(awk '{print $1}' main.sha256)"
