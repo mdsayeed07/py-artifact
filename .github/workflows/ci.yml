@@ -45,7 +45,7 @@ jobs:
       - name: Check existing package versions
         id: check_versions
         run: |
-          existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format generic)
+          existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format generic --namespace ${{env.NAMESPACE}})
           echo "$existing_versions"
           echo "::set-output name=existing_versions::$existing_versions"
   
