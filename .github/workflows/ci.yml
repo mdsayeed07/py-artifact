@@ -33,7 +33,7 @@ jobs:
       - name: zipping python source-code
         run: |
           sudo apt install -y zip unzip
-          zip -r main.py .
+          zip -r main.zip .
           ls -la
 
       # - name: Configure AWS credentials
