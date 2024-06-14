@@ -63,12 +63,12 @@ jobs:
           aws codeartifact publish-package-version \
           --domain ${{env.DOMAIN}} \
           --repository ${{env.REPOSITORY}} \
-          --format pypi \
+          --format generic \
           --package ${{env.PACKAGE_NAME}} \
           --package-version ${{env.PACKAGE_VERSION}} \
           --asset-name ${{env.PACKAGE_NAME}} \
           --asset-content ./${{env.PACKAGE_NAME}} \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
+          --namespace ${{env.NAMESPACE}} \
           --region ${{env.REGION}}
           
-        # --namespace ${{env.NAMESPACE}} \
