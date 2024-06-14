@@ -35,7 +35,7 @@ jobs:
 
       - name: Configure pip for CodeArtifact
         run: |
-          aws codeartifact login --tool pypi --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
+          aws codeartifact login --tool twine --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
 
       - name: Generate CodeArtifact Authorization Token
         run: |
