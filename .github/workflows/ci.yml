@@ -58,5 +58,6 @@ jobs:
           --asset-name main.py \
           --asset-content ./main.py \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
-          --namespace generic_artifacts \
           --region us-east-1
+          
+        # --namespace generic_artifacts \
