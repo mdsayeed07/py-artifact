@@ -35,20 +35,20 @@ jobs:
           sudo apt install -y zip unzip
           zip -r main.zip .
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{env.REGION}} 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{env.REGION}} 
 
-      # - name: Configure pip for CodeArtifact
-      #   run: |
-      #     aws codeartifact login --tool pip --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
+      - name: Configure pip for CodeArtifact
+        run: |
+          aws codeartifact login --tool pip --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
 
-      # - name: Generate CodeArtifact Authorization Token
-      #   run: |
-      #     aws codeartifact get-authorization-token --domain ${{env.DOMAIN}} --query authorizationToken --output text
+      - name: Generate CodeArtifact Authorization Token
+        run: |
+          aws codeartifact get-authorization-token --domain ${{env.DOMAIN}} --query authorizationToken --output text
       
       - name: Calculate SHA256 hash
         id: sha256
@@ -58,17 +58,17 @@ jobs:
           cat main.sha256
           echo "::set-output name=sha256::$(awk '{print $1}' main.sha256)"
 
-      # - name: Publish to CodeArtifact
-      #   run: | 
-      #     aws codeartifact publish-package-version \
-      #     --domain ${{env.DOMAIN}} \
-      #     --repository ${{env.REPOSITORY}} \
-      #     --format generic \
-      #     --package ${{env.PACKAGE_NAME}} \
-      #     --package-version ${{env.PACKAGE_VERSION}} \
-      #     --asset-name ${{env.PACKAGE_NAME}} \
-      #     --asset-content ./${{env.PACKAGE_NAME}} \
-      #     --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
-      #     --namespace ${{env.NAMESPACE}} \
-      #     --region ${{env.REGION}}
+      - name: Publish to CodeArtifact
+        run: | 
+          aws codeartifact publish-package-version \
+          --domain ${{env.DOMAIN}} \
+          --repository ${{env.REPOSITORY}} \
+          --format pypi \
+          --package ${{env.PACKAGE_NAME}} \
+          --package-version ${{env.PACKAGE_VERSION}} \
+          --asset-name ${{env.PACKAGE_NAME}} \
+          --asset-content ./${{env.PACKAGE_NAME}} \
+          --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
+          --region ${{env.REGION}}
           
+        # --namespace ${{env.NAMESPACE}} \
