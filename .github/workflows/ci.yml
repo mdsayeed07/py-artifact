@@ -45,13 +45,12 @@ jobs:
       - name: Check existing package versions
         id: check_versions
         run: |
-          existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format generic --namespace ${{env.NAMESPACE}})
-          echo "$existing_versions"
+          existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format json)
+          echo "$existing_versions" > existing_versions.json
           echo "::set-output name=existing_versions::$existing_versions"
-  
+
       - name: Debug JSON output
         run: |
-          echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
           cat existing_versions.json  # Print for debugging
 
       - name: Parse existing versions
@@ -59,6 +58,24 @@ jobs:
         run: |
           versions=$(jq -r '.versions[]' existing_versions.json)
           echo "::set-output name=versions_list::$versions"
+          
+      # - name: Check existing package versions
+      #   id: check_versions
+      #   run: |
+      #     existing_versions=$(aws codeartifact list-package-versions --domain ${{ env.DOMAIN }} --repository ${{ env.REPOSITORY }} --package ${{ env.PACKAGE_NAME }} --format generic --namespace ${{env.NAMESPACE}})
+      #     echo "$existing_versions"
+      #     echo "::set-output name=existing_versions::$existing_versions"
+  
+      # - name: Debug JSON output
+      #   run: |
+      #     echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
+      #     cat existing_versions.json  # Print for debugging
+
+      # - name: Parse existing versions
+      #   id: parse_versions
+      #   run: |
+      #     versions=$(jq -r '.versions[]' existing_versions.json)
+      #     echo "::set-output name=versions_list::$versions"
   
       # - name: Parse existing versions
       #   id: parse_versions
