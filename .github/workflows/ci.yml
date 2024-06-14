@@ -52,7 +52,7 @@ jobs:
           aws codeartifact publish-package-version \
           --domain rust \
           --repository rust-repo \
-          --format pip \
+          --format pypi \
           --package main.py \
           --package-version 1.0.0 \
           --asset-name main.py \
