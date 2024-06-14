@@ -35,7 +35,7 @@ jobs:
           ls -la
           sha256sum main > main.sha256
           cat main.sha256
-          echo "::set-output name=sha256::$(awk {print $1} main.sha256)"
+          echo "::set-output name=sha256::$(awk {print ${1}} main.sha256)"
 
       - name: Publish to CodeArtifact
         run: | 
