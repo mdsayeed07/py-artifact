@@ -14,39 +14,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
-
-      - name: Configure pip for CodeArtifact
+      - name: check python version
         run: |
-          aws codeartifact login --tool pip --repository rust-repo --domain rust-domain
+          python --version
+          pip --version
 
-      - name: Generate CodeArtifact Authorization Token
-        run: |
-          aws codeartifact get-authorization-token --domain rust-domain --query authorizationToken --output text
+
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1 
+
+      # - name: Configure pip for CodeArtifact
+      #   run: |
+      #     aws codeartifact login --tool pip --repository rust-repo --domain rust-domain
+
+      # - name: Generate CodeArtifact Authorization Token
+      #   run: |
+      #     aws codeartifact get-authorization-token --domain rust-domain --query authorizationToken --output text
       
-      - name: Calculate SHA256 hash
-        id: sha256
-        run: |
-          ls -la
-          sha256sum main > main.sha256
-          cat main.sha256
-          echo "::set-output name=sha256::$(awk {print ${1}} main.sha256)"
+      # - name: Calculate SHA256 hash
+      #   id: sha256
+      #   run: |
+      #     ls -la
+      #     sha256sum main > main.sha256
+      #     cat main.sha256
+      #     echo "::set-output name=sha256::$(awk {print ${1}} main.sha256)"
 
-      - name: Publish to CodeArtifact
-        run: | 
-          aws codeartifact publish-package-version \
-          --domain rust \
-          --repository rust-repo \
-          --format pip \ 
-          --package main \ 
-          --package-version 1.0.0 \
-          --asset-name main \
-          --asset-content ./main \
-          --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
-          --namespace generic_artifacts \
-          --region us-east-1
+      # - name: Publish to CodeArtifact
+      #   run: | 
+      #     aws codeartifact publish-package-version \
+      #     --domain rust \
+      #     --repository rust-repo \
+      #     --format pip \ 
+      #     --package main \ 
+      #     --package-version 1.0.0 \
+      #     --asset-name main \
+      #     --asset-content ./main \
+      #     --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
+      #     --namespace generic_artifacts \
+      #     --region us-east-1
