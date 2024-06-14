@@ -49,13 +49,24 @@ jobs:
           echo "$existing_versions"
           echo "::set-output name=existing_versions::$existing_versions"
   
+      - name: Debug JSON output
+        run: |
+          echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
+          cat existing_versions.json  # Print for debugging
+
       - name: Parse existing versions
         id: parse_versions
         run: |
-          echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
-          cat existing_versions.json  # Optional: Print for debugging
-          jq -r '.versions[]' existing_versions.json > versions_list.txt
-          echo "::set-output name=versions_list::$(cat versions_list.txt)"
+          versions=$(jq -r '.versions[]' existing_versions.json)
+          echo "::set-output name=versions_list::$versions"
+  
+      # - name: Parse existing versions
+      #   id: parse_versions
+      #   run: |
+      #     echo "${{ steps.check_versions.outputs.existing_versions }}" > existing_versions.json
+      #     cat existing_versions.json  # Optional: Print for debugging
+      #     jq -r '.versions[]' existing_versions.json > versions_list.txt
+      #     echo "::set-output name=versions_list::$(cat versions_list.txt)"
   
       - name: Check if version exists
         id: version_check
