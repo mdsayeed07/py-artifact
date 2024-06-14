@@ -85,12 +85,25 @@ jobs:
       #     jq -r '.versions[]' existing_versions.json > versions_list.txt
       #     echo "::set-output name=versions_list::$(cat versions_list.txt)"
   
+      # - name: Check if version exists
+      #   id: version_check
+      #   run: |
+      #     cat versions_list.txt
+      #     if grep -q "${{ env.PACKAGE_VERSION }}" versions_list.txt; then
+      #       echo "Version ${PACKAGE_VERSION} already exists. Skipping publish."
+      #       echo "::set-output name=version_exists::true"
+      #     else
+      #       echo "Version ${PACKAGE_VERSION} does not exist. Proceeding with publish."
+      #       echo "::set-output name=version_exists::false"
+      #     fi
+
       - name: Check if version exists
         id: version_check
         run: |
-          if grep -q "${{ env.PACKAGE_VERSION }}" versions_list.txt; then
+          if echo "${{ steps.parse_versions.outputs.versions_list }}" | grep -q "${{ env.PACKAGE_VERSION }}"; then
             echo "Version ${PACKAGE_VERSION} already exists. Skipping publish."
             echo "::set-output name=version_exists::true"
+            exit 1
           else
             echo "Version ${PACKAGE_VERSION} does not exist. Proceeding with publish."
             echo "::set-output name=version_exists::false"
