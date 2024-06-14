@@ -35,7 +35,7 @@ jobs:
 
       - name: Configure pip for CodeArtifact
         run: |
-          aws codeartifact login --tool pip --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
+          aws codeartifact login --tool pypi --repository ${{env.REPOSITORY}} --domain ${{env.DOMAIN}}
 
       - name: Generate CodeArtifact Authorization Token
         run: |
@@ -54,12 +54,12 @@ jobs:
           aws codeartifact publish-package-version \
           --domain ${{env.DOMAIN}} \
           --repository ${{env.REPOSITORY}} \
-          --format generic \
+          --format pypi \
           --package main.py \
           --package-version 1.0.0 \
           --asset-name main.py \
           --asset-content ./main.py \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
-          --namespace generic_artifacts \
           --region us-east-1
           
+        # --namespace generic_artifacts \
