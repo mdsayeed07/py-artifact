@@ -24,7 +24,9 @@ jobs:
 
       - name: zipping python source-code with tar
         run: |
+          ls -la
           tar -czvf main.tar.gz main.py ChessEngine.py ChessGame.py requirements.txt
+          ls -la
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
