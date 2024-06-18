@@ -24,9 +24,7 @@ jobs:
 
       - name: zipping python source-code with tar
         run: |
-          ls -la
           tar -czvf main.tar.gz main.py ChessEngine.py ChessGame.py requirements.txt
-          ls -la
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -45,7 +43,6 @@ jobs:
       
       ## add condition##
       
-
       - name: Calculate SHA256 hash
         id: sha256
         run: |
@@ -58,12 +55,11 @@ jobs:
           aws codeartifact publish-package-version \
           --domain ${{env.DOMAIN}} \
           --repository ${{env.REPOSITORY}} \
-          --format pypi \
+          --format generic \
           --package ${{env.PACKAGE_NAME}} \
           --package-version ${{env.PACKAGE_VERSION}} \
           --asset-name ${{env.PACKAGE_NAME}} \
           --asset-content ./${{env.PACKAGE_NAME}} \
           --asset-sha256 "${{ steps.sha256.outputs.sha256 }}" \
+          --namespace ${{env.NAMESPACE}} \
           --region ${{env.REGION}}
-          
-        # --namespace ${{env.NAMESPACE}} \
